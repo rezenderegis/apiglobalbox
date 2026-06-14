@@ -12,4 +12,7 @@ export declare class Imovel {
     modalidadeVenda: string;
     link: string;
     dataGeracao: Date;
+    situacao: string;
+    dataSituacao: Date | null;
+    createdAt: Date;
 }

@@ -7,6 +7,7 @@ export declare class ImoveisService {
     importFromCsv(filePath: string): Promise<{
         imported: number;
         skipped: number;
+        indisponiveis: number;
     }>;
     findAll(query: QueryImovelDto): Promise<{
         data: Imovel[];

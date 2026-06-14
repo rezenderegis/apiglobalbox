@@ -7,6 +7,7 @@ export declare class ImoveisController {
     importCsv(dto: ImportImovelDto): Promise<{
         imported: number;
         skipped: number;
+        indisponiveis: number;
         message: string;
     }>;
     findAll(query: QueryImovelDto): Promise<{

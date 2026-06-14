@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity('imoveis')
 export class Imovel {
@@ -40,4 +40,13 @@ export class Imovel {
 
   @Column({ name: 'data_geracao', type: 'date' })
   dataGeracao: Date;
+
+  @Column({ length: 20, default: 'disponivel' })
+  situacao: string;
+
+  @Column({ name: 'data_situacao', type: 'timestamptz', nullable: true })
+  dataSituacao: Date | null;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 }

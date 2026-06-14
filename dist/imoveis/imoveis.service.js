@@ -51,20 +51,20 @@ let ImoveisService = class ImoveisService {
                     modalidadeVenda: row[10]?.trim(),
                     link: row[11]?.trim(),
                     dataGeracao,
+                    situacao: 'disponivel',
                 });
                 records.push(imovel);
             })
                 .on('end', async () => {
                 if (records.length === 0)
-                    return resolve({ imported: 0, skipped: 0 });
-                const ids = records.map((r) => r.numeroImovel);
+                    return resolve({ imported: 0, skipped: 0, indisponiveis: 0 });
+                const idsNoCsv = records.map((r) => r.numeroImovel);
                 const existing = await this.imovelRepo.find({
-                    where: { numeroImovel: (0, typeorm_2.In)(ids) },
+                    where: { numeroImovel: (0, typeorm_2.In)(idsNoCsv) },
                     select: { numeroImovel: true },
                 });
                 const existingSet = new Set(existing.map((e) => String(e.numeroImovel)));
                 const novos = records.filter((r) => !existingSet.has(String(r.numeroImovel)));
-                const skipped = records.length - novos.length;
                 if (novos.length > 0) {
                     const CHUNK = 500;
                     for (let i = 0; i < novos.length; i += CHUNK) {
@@ -77,7 +77,17 @@ let ImoveisService = class ImoveisService {
                             .execute();
                     }
                 }
-                resolve({ imported: novos.length, skipped });
+                const { affected } = await this.imovelRepo
+                    .createQueryBuilder()
+                    .update(imovel_entity_1.Imovel)
+                    .set({ situacao: 'indisponivel', dataSituacao: new Date() })
+                    .where({ situacao: 'disponivel', numeroImovel: (0, typeorm_2.Not)((0, typeorm_2.In)(idsNoCsv)) })
+                    .execute();
+                resolve({
+                    imported: novos.length,
+                    skipped: records.length - novos.length,
+                    indisponiveis: affected ?? 0,
+                });
             })
                 .on('error', reject);
         });
@@ -88,6 +98,8 @@ let ImoveisService = class ImoveisService {
         const skip = (page - 1) * limit;
         console.log('[findAll] filtros recebidos:', JSON.stringify(query, null, 2));
         const qb = this.imovelRepo.createQueryBuilder('i');
+        const situacao = query.situacao ?? 'disponivel';
+        qb.andWhere('i.situacao = :situacao', { situacao });
         if (query.uf)
             qb.andWhere('UPPER(i.uf) = UPPER(:uf)', { uf: query.uf });
         if (query.cidade)
@@ -114,15 +126,15 @@ let ImoveisService = class ImoveisService {
             qb.andWhere('i.desconto >= :descontoMin', { descontoMin: Number(query.descontoMin) });
         if (query.dataGeracao)
             qb.andWhere('i.data_geracao = :dataGeracao', { dataGeracao: query.dataGeracao });
+        if (query.dataInicio) {
+            qb.andWhere('i.created_at >= :dataInicio', { dataInicio: new Date(`${query.dataInicio}T00:00:00`) });
+        }
+        if (query.dataFim) {
+            qb.andWhere('i.created_at <= :dataFim', { dataFim: new Date(`${query.dataFim}T23:59:59`) });
+        }
         console.log('[findAll] SQL gerado:', qb.getSql());
         const [data, total] = await qb.skip(skip).take(limit).getManyAndCount();
-        return {
-            data,
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit),
-        };
+        return { data, total, page, limit, totalPages: Math.ceil(total / limit) };
     }
     async findOne(numeroImovel) {
         const imovel = await this.imovelRepo.findOne({ where: { numeroImovel } });

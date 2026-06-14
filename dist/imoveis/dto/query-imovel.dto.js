@@ -95,6 +95,28 @@ __decorate([
     __metadata("design:type", String)
 ], QueryImovelDto.prototype, "dataGeracao", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '2026-01-01', description: 'Data inicial de cadastro (YYYY-MM-DD)' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], QueryImovelDto.prototype, "dataInicio", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '2026-12-31', description: 'Data final de cadastro (YYYY-MM-DD)' }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], QueryImovelDto.prototype, "dataFim", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'disponivel',
+        description: 'Situação do imóvel: disponivel | indisponivel (padrão: disponivel)',
+        enum: ['disponivel', 'indisponivel'],
+    }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsIn)(['disponivel', 'indisponivel']),
+    __metadata("design:type", String)
+], QueryImovelDto.prototype, "situacao", void 0);
+__decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: '1', description: 'Página (padrão: 1)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsNumberString)(),

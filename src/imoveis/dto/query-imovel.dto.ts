@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsArray, IsNumberString, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsIn, IsNumberString, IsOptional, IsString } from 'class-validator';
 
 export class QueryImovelDto {
   @ApiPropertyOptional({ example: 'SP', description: 'Sigla do estado' })
@@ -70,6 +70,25 @@ export class QueryImovelDto {
   @IsOptional()
   @IsString()
   dataGeracao?: string;
+
+  @ApiPropertyOptional({ example: '2026-01-01', description: 'Data inicial de cadastro (YYYY-MM-DD)' })
+  @IsOptional()
+  @IsString()
+  dataInicio?: string;
+
+  @ApiPropertyOptional({ example: '2026-12-31', description: 'Data final de cadastro (YYYY-MM-DD)' })
+  @IsOptional()
+  @IsString()
+  dataFim?: string;
+
+  @ApiPropertyOptional({
+    example: 'disponivel',
+    description: 'Situação do imóvel: disponivel | indisponivel (padrão: disponivel)',
+    enum: ['disponivel', 'indisponivel'],
+  })
+  @IsOptional()
+  @IsIn(['disponivel', 'indisponivel'])
+  situacao?: string;
 
   @ApiPropertyOptional({ example: '1', description: 'Página (padrão: 1)' })
   @IsOptional()

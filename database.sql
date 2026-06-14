@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS imoveis (
     descricao       TEXT            NOT NULL,
     modalidade_venda VARCHAR(100)   NOT NULL,
     link            VARCHAR(500)    NOT NULL,
-    data_geracao    DATE            NOT NULL
+    data_geracao    DATE            NOT NULL,
+    created_at      TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 -- Índices para os filtros mais usados

@@ -66,6 +66,18 @@ __decorate([
     (0, typeorm_1.Column)({ name: 'data_geracao', type: 'date' }),
     __metadata("design:type", Date)
 ], Imovel.prototype, "dataGeracao", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ length: 20, default: 'disponivel' }),
+    __metadata("design:type", String)
+], Imovel.prototype, "situacao", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ name: 'data_situacao', type: 'timestamptz', nullable: true }),
+    __metadata("design:type", Date)
+], Imovel.prototype, "dataSituacao", void 0);
+__decorate([
+    (0, typeorm_1.CreateDateColumn)({ name: 'created_at' }),
+    __metadata("design:type", Date)
+], Imovel.prototype, "createdAt", void 0);
 exports.Imovel = Imovel = __decorate([
     (0, typeorm_1.Entity)('imoveis')
 ], Imovel);

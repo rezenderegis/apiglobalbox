@@ -9,6 +9,9 @@ export declare class QueryImovelDto {
     precoMax?: string;
     descontoMin?: string;
     dataGeracao?: string;
+    dataInicio?: string;
+    dataFim?: string;
+    situacao?: string;
     page?: string;
     limit?: string;
 }
