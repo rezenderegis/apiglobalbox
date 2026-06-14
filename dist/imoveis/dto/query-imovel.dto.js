@@ -65,6 +65,16 @@ __decorate([
     __metadata("design:type", Array)
 ], QueryImovelDto.prototype, "bairrosExcluir", void 0);
 __decorate([
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'sim',
+        description: 'Aceita financiamento: sim | nao',
+        enum: ['sim', 'nao'],
+    }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsIn)(['sim', 'nao']),
+    __metadata("design:type", String)
+], QueryImovelDto.prototype, "financiamento", void 0);
+__decorate([
     (0, swagger_1.ApiPropertyOptional)({ example: 'Terreno', description: 'Texto na descrição (busca parcial)' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),

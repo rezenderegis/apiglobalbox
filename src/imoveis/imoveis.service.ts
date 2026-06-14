@@ -129,6 +129,9 @@ export class ImoveisService {
       qb.andWhere('UPPER(i.bairro) NOT IN (:...bairrosExcluir)', { bairrosExcluir: vals });
     }
 
+    if (query.financiamento !== undefined) {
+      qb.andWhere('i.financiamento = :financiamento', { financiamento: query.financiamento === 'sim' });
+    }
     if (query.descricao) qb.andWhere('UPPER(i.descricao) LIKE UPPER(:descricao)', { descricao: `%${query.descricao}%` });
     if (query.precoMin) qb.andWhere('i.preco >= :precoMin', { precoMin: Number(query.precoMin) });
     if (query.precoMax) qb.andWhere('i.preco <= :precoMax', { precoMax: Number(query.precoMax) });

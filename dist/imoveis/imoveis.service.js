@@ -123,6 +123,9 @@ let ImoveisService = class ImoveisService {
             console.log('[findAll] bairrosExcluir aplicado:', vals);
             qb.andWhere('UPPER(i.bairro) NOT IN (:...bairrosExcluir)', { bairrosExcluir: vals });
         }
+        if (query.financiamento !== undefined) {
+            qb.andWhere('i.financiamento = :financiamento', { financiamento: query.financiamento === 'sim' });
+        }
         if (query.descricao)
             qb.andWhere('UPPER(i.descricao) LIKE UPPER(:descricao)', { descricao: `%${query.descricao}%` });
         if (query.precoMin)

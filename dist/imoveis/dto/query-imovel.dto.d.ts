@@ -4,6 +4,7 @@ export declare class QueryImovelDto {
     bairro?: string;
     bairrosIncluir?: string[];
     bairrosExcluir?: string[];
+    financiamento?: string;
     descricao?: string;
     precoMin?: string;
     precoMax?: string;

@@ -92,6 +92,7 @@ __decorate([
 ], ImoveisController.prototype, "findOne", null);
 exports.ImoveisController = ImoveisController = __decorate([
     (0, swagger_1.ApiTags)('Imóveis'),
+    (0, swagger_1.ApiSecurity)('x-api-key'),
     (0, common_1.Controller)('imoveis'),
     __metadata("design:paramtypes", [imoveis_service_1.ImoveisService])
 ], ImoveisController);

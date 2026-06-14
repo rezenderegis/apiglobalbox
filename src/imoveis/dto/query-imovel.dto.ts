@@ -46,6 +46,15 @@ export class QueryImovelDto {
   })
   bairrosExcluir?: string[];
 
+  @ApiPropertyOptional({
+    example: 'sim',
+    description: 'Aceita financiamento: sim | nao',
+    enum: ['sim', 'nao'],
+  })
+  @IsOptional()
+  @IsIn(['sim', 'nao'])
+  financiamento?: string;
+
   @ApiPropertyOptional({ example: 'Terreno', description: 'Texto na descrição (busca parcial)' })
   @IsOptional()
   @IsString()

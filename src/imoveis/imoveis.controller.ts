@@ -10,13 +10,14 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { memoryStorage } from 'multer';
 import { ImoveisService } from './imoveis.service';
 import { ImportImovelDto } from './dto/import-imovel.dto';
 import { QueryImovelDto } from './dto/query-imovel.dto';
 
 @ApiTags('Imóveis')
+@ApiSecurity('x-api-key')
 @Controller('imoveis')
 export class ImoveisController {
   constructor(private readonly imoveisService: ImoveisService) {}
