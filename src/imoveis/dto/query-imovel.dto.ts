@@ -71,12 +71,21 @@ export class QueryImovelDto {
   @IsString()
   dataGeracao?: string;
 
-  @ApiPropertyOptional({ example: '2026-01-01', description: 'Data inicial de cadastro (YYYY-MM-DD)' })
+  @ApiPropertyOptional({
+    example: 'hoje',
+    description: 'Atalho de período de cadastro: hoje | semana | mes | ano',
+    enum: ['hoje', 'semana', 'mes', 'ano'],
+  })
+  @IsOptional()
+  @IsIn(['hoje', 'semana', 'mes', 'ano'])
+  periodo?: string;
+
+  @ApiPropertyOptional({ example: '2026-01-01', description: 'Data inicial de cadastro (YYYY-MM-DD) — usado junto ou separado de dataFim' })
   @IsOptional()
   @IsString()
   dataInicio?: string;
 
-  @ApiPropertyOptional({ example: '2026-12-31', description: 'Data final de cadastro (YYYY-MM-DD)' })
+  @ApiPropertyOptional({ example: '2026-12-31', description: 'Data final de cadastro (YYYY-MM-DD) — usado junto ou separado de dataInicio' })
   @IsOptional()
   @IsString()
   dataFim?: string;

@@ -95,13 +95,23 @@ __decorate([
     __metadata("design:type", String)
 ], QueryImovelDto.prototype, "dataGeracao", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: '2026-01-01', description: 'Data inicial de cadastro (YYYY-MM-DD)' }),
+    (0, swagger_1.ApiPropertyOptional)({
+        example: 'hoje',
+        description: 'Atalho de período de cadastro: hoje | semana | mes | ano',
+        enum: ['hoje', 'semana', 'mes', 'ano'],
+    }),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsIn)(['hoje', 'semana', 'mes', 'ano']),
+    __metadata("design:type", String)
+], QueryImovelDto.prototype, "periodo", void 0);
+__decorate([
+    (0, swagger_1.ApiPropertyOptional)({ example: '2026-01-01', description: 'Data inicial de cadastro (YYYY-MM-DD) — usado junto ou separado de dataFim' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], QueryImovelDto.prototype, "dataInicio", void 0);
 __decorate([
-    (0, swagger_1.ApiPropertyOptional)({ example: '2026-12-31', description: 'Data final de cadastro (YYYY-MM-DD)' }),
+    (0, swagger_1.ApiPropertyOptional)({ example: '2026-12-31', description: 'Data final de cadastro (YYYY-MM-DD) — usado junto ou separado de dataInicio' }),
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

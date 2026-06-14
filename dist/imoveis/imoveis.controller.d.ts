@@ -4,6 +4,12 @@ import { QueryImovelDto } from './dto/query-imovel.dto';
 export declare class ImoveisController {
     private readonly imoveisService;
     constructor(imoveisService: ImoveisService);
+    uploadCsv(file: Express.Multer.File): Promise<{
+        imported: number;
+        skipped: number;
+        indisponiveis: number;
+        message: string;
+    }>;
     importCsv(dto: ImportImovelDto): Promise<{
         imported: number;
         skipped: number;

@@ -9,6 +9,12 @@ export declare class ImoveisService {
         skipped: number;
         indisponiveis: number;
     }>;
+    importFromBuffer(buffer: Buffer): Promise<{
+        imported: number;
+        skipped: number;
+        indisponiveis: number;
+    }>;
+    private processarCsv;
     findAll(query: QueryImovelDto): Promise<{
         data: Imovel[];
         total: number;

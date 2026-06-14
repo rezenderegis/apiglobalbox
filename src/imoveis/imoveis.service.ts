@@ -15,7 +15,15 @@ export class ImoveisService {
 
   async importFromCsv(filePath: string): Promise<{ imported: number; skipped: number; indisponiveis: number }> {
     const content = fs.readFileSync(filePath, 'latin1');
+    return this.processarCsv(content);
+  }
 
+  async importFromBuffer(buffer: Buffer): Promise<{ imported: number; skipped: number; indisponiveis: number }> {
+    const content = buffer.toString('latin1');
+    return this.processarCsv(content);
+  }
+
+  private async processarCsv(content: string): Promise<{ imported: number; skipped: number; indisponiveis: number }> {
     const lines = content.split('\n');
     const dataGeracao = this.parseDataGeracao(lines[0]);
 
@@ -126,6 +134,25 @@ export class ImoveisService {
     if (query.precoMax) qb.andWhere('i.preco <= :precoMax', { precoMax: Number(query.precoMax) });
     if (query.descontoMin) qb.andWhere('i.desconto >= :descontoMin', { descontoMin: Number(query.descontoMin) });
     if (query.dataGeracao) qb.andWhere('i.data_geracao = :dataGeracao', { dataGeracao: query.dataGeracao });
+
+    if (query.periodo) {
+      const agora = new Date();
+      let dataInicio: Date;
+
+      if (query.periodo === 'hoje') {
+        dataInicio = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+      } else if (query.periodo === 'semana') {
+        dataInicio = new Date(agora);
+        dataInicio.setDate(agora.getDate() - agora.getDay());
+        dataInicio.setHours(0, 0, 0, 0);
+      } else if (query.periodo === 'mes') {
+        dataInicio = new Date(agora.getFullYear(), agora.getMonth(), 1);
+      } else {
+        dataInicio = new Date(agora.getFullYear(), 0, 1);
+      }
+
+      qb.andWhere('i.created_at >= :periodoInicio', { periodoInicio: dataInicio });
+    }
 
     if (query.dataInicio) {
       qb.andWhere('i.created_at >= :dataInicio', { dataInicio: new Date(`${query.dataInicio}T00:00:00`) });

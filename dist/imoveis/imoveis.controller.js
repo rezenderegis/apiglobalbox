@@ -14,7 +14,9 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImoveisController = void 0;
 const common_1 = require("@nestjs/common");
+const platform_express_1 = require("@nestjs/platform-express");
 const swagger_1 = require("@nestjs/swagger");
+const multer_1 = require("multer");
 const imoveis_service_1 = require("./imoveis.service");
 const import_imovel_dto_1 = require("./dto/import-imovel.dto");
 const query_imovel_dto_1 = require("./dto/query-imovel.dto");
@@ -22,12 +24,15 @@ let ImoveisController = class ImoveisController {
     constructor(imoveisService) {
         this.imoveisService = imoveisService;
     }
+    async uploadCsv(file) {
+        if (!file)
+            throw new common_1.BadRequestException('Nenhum arquivo enviado');
+        const result = await this.imoveisService.importFromBuffer(file.buffer);
+        return { message: 'Importação concluída', ...result };
+    }
     async importCsv(dto) {
         const result = await this.imoveisService.importFromCsv(dto.filePath);
-        return {
-            message: 'Importação concluída',
-            ...result,
-        };
+        return { message: 'Importação concluída', ...result };
     }
     findAll(query) {
         return this.imoveisService.findAll(query);
@@ -38,8 +43,27 @@ let ImoveisController = class ImoveisController {
 };
 exports.ImoveisController = ImoveisController;
 __decorate([
+    (0, common_1.Post)('upload'),
+    (0, swagger_1.ApiOperation)({ summary: 'Importar CSV via upload de arquivo' }),
+    (0, swagger_1.ApiConsumes)('multipart/form-data'),
+    (0, swagger_1.ApiBody)({
+        schema: {
+            type: 'object',
+            properties: {
+                file: { type: 'string', format: 'binary' },
+            },
+        },
+    }),
+    (0, swagger_1.ApiResponse)({ status: 201, description: 'Importação concluída com sucesso' }),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', { storage: (0, multer_1.memoryStorage)() })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ImoveisController.prototype, "uploadCsv", null);
+__decorate([
     (0, common_1.Post)('import'),
-    (0, swagger_1.ApiOperation)({ summary: 'Importar CSV de imóveis da Caixa pelo caminho do arquivo' }),
+    (0, swagger_1.ApiOperation)({ summary: 'Importar CSV pelo caminho do arquivo no servidor' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Importação concluída com sucesso' }),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

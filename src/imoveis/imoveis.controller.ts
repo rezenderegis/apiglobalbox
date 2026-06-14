@@ -1,5 +1,17 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBody, ApiConsumes, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { memoryStorage } from 'multer';
 import { ImoveisService } from './imoveis.service';
 import { ImportImovelDto } from './dto/import-imovel.dto';
 import { QueryImovelDto } from './dto/query-imovel.dto';
@@ -9,15 +21,31 @@ import { QueryImovelDto } from './dto/query-imovel.dto';
 export class ImoveisController {
   constructor(private readonly imoveisService: ImoveisService) {}
 
+  @Post('upload')
+  @ApiOperation({ summary: 'Importar CSV via upload de arquivo' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+    },
+  })
+  @ApiResponse({ status: 201, description: 'Importação concluída com sucesso' })
+  @UseInterceptors(FileInterceptor('file', { storage: memoryStorage() }))
+  async uploadCsv(@UploadedFile() file: Express.Multer.File) {
+    if (!file) throw new BadRequestException('Nenhum arquivo enviado');
+    const result = await this.imoveisService.importFromBuffer(file.buffer);
+    return { message: 'Importação concluída', ...result };
+  }
+
   @Post('import')
-  @ApiOperation({ summary: 'Importar CSV de imóveis da Caixa pelo caminho do arquivo' })
+  @ApiOperation({ summary: 'Importar CSV pelo caminho do arquivo no servidor' })
   @ApiResponse({ status: 201, description: 'Importação concluída com sucesso' })
   async importCsv(@Body() dto: ImportImovelDto) {
     const result = await this.imoveisService.importFromCsv(dto.filePath);
-    return {
-      message: 'Importação concluída',
-      ...result,
-    };
+    return { message: 'Importação concluída', ...result };
   }
 
   @Get()
